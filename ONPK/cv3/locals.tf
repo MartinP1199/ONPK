@@ -1,6 +1,18 @@
 # -- root/locals.tf ---
 
 locals {
+  
+  # --- key ---
+  key = ""
+
+  # --- home ---
+  home_public_ip = "158.255.30.130/32"
+  home_isp_net = "158.255.30.130"
+
+  # --- uniza ---
+  uniza_network = "158.193.0.0/16"
+
+  # --- uniza fri kis ---
   kis_os_region = "RegionOne"
   kis_os_auth_url = "http://158.193.138.33:5000/v3"
   kis_os_endpoint_overrides = {
