@@ -1,47 +1,51 @@
 # --- root/main.tf ---
 
-resource "openstack_networking_secgroup_v2" "secgroup_terrabuntu" {
-  name        = "secgroup_terrabuntu"
-  description = "My neutron security group"
+
+
+
+
+# --- keys ---
+resource "openstack_compute_keypair_v2" "keypair" {
+name = "terrakey"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_1" {
-  description       = "allow SSH from uniza"
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "tcp"
-  port_range_min    = 22
-  port_range_max    = 22
-  remote_ip_prefix  = local.uniza_network
+resource "local_file" "private_key" {
+content = openstack_compute_keypair_v2.keypair.private_key
+filename = "${path.module}/terrakey.pem"
+}
+
+module "instance" {
+  source = "./compute"
+  project = var.project
+  enviroment = var.enviroment
   security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+  name = "stud15"
+  script_file_path = var.script_file_path
+  remote_ip_prefix = "158.193.0.0/16"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_2" {
-  description       = "allow ping from uniza"
-  direction         = "ingress"
-  ethertype         = "IPv4"
-  protocol          = "icmp"
-  remote_ip_prefix  = local.uniza_network
-  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
-}
 
-resource "openstack_networking_network_v2" "tf_vbridge" {
-  name           = "tf_test_network"
-  admin_state_up = "true"
-}
+# --- instances ---
+#key_pair = openstack_compute_keypair_v2.keypair.private_key
 
-resource "openstack_networking_subnet_v2" "subnet_1" {
-  network_id = "${openstack_networking_network_v2.tf_vbridge.id}"
-  cidr       = "192.168.200.0/24"
+resource "random_pet" "server" {
+  keepers = {
+    # Generate a new pet name each time we switch to a new AMI id
+    ami_id = var.ami_id
+  }
 }
 
 resource "openstack_compute_instance_v2" "terrabuntu_01" {
-  name            = "terrabuntu 01"
+  count = 2
+  name            = "terrabuntu-${random_pet.server.id}"
   image_id        = "0fc1152a-4037-4d89-a22a-60f477e2eba0"
   flavor_id       = "1eee6fc3-f274-4406-a054-1969ac79926f"
-  key_pair        = "key-stud-15"
+  #key_pair        = "key-stud-15"
+  key_pair     = openstack_compute_keypair_v2.keypair.private_key
   #security_groups = ["secgroup_terrabuntu"]
   security_groups = [ "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}" ]
+
+  ami = random_pet.server.keepers.ami_id
 
   network {
     name = "ext-net"
@@ -51,21 +55,4 @@ resource "openstack_compute_instance_v2" "terrabuntu_01" {
     name = "${openstack_networking_network_v2.tf_vbridge.name}"
   }
 
-}
-
-resource "openstack_compute_instance_v2" "terrabuntu_02" {
-  name            = "terrabuntu 02"
-  image_id        = "0fc1152a-4037-4d89-a22a-60f477e2eba0"
-  flavor_id       = "1eee6fc3-f274-4406-a054-1969ac79926f"
-  key_pair        = "key-stud-15"
-  #security_groups = ["secgroup_terrabuntu"]
-  security_groups = [ "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}" ]
-
-  network {
-    name = "ext-net"
-  }
-
-  network {
-    name = "${openstack_networking_network_v2.tf_vbridge.name}"
-  }
 }

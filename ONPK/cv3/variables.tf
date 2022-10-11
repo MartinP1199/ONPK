@@ -13,4 +13,17 @@ variable "tenant_name" {
     default = "ONPK_15"
 }
 
+variable "project" {
+  type = string
+  default = "terrabuntu"
+}
 
+variable "security_group_id" {
+  type = string
+  default = "secgroup_terrabuntu"
+}
+
+variable "script_file_path" {
+  type = string
+  default = "scrips/script.sh"
+}

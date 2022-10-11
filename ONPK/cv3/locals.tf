@@ -5,6 +5,9 @@ locals {
   # --- key ---
   key = ""
 
+  # --- local ---
+  local_subnet = "192.168.0.0/16"
+
   # --- home ---
   home_public_ip = "158.255.30.130/32"
   home_isp_net = "158.255.30.130"
