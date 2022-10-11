@@ -1,11 +1,10 @@
 # --- root/providers.tf ---
 
-# Define required providers
+# https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs
 terraform {
-#required_version = ">= 0.14.0"
   required_providers {
     openstack = {
-      source  = "terraform-provider-openstack/openstack"
+      source = "terraform-provider-openstack/openstack"
     }
   }
 }
@@ -20,4 +19,3 @@ provider "openstack" {
   insecure    = true
   endpoint_overrides = local.kis_os_endpoint_overrides
 }
-

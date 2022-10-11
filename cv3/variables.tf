@@ -25,5 +25,5 @@ variable "security_group_id" {
 
 variable "script_file_path" {
   type = string
-  default = "scrips/script.sh"
+  default = "scripts/script.sh"
 }

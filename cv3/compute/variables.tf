@@ -28,10 +28,15 @@ variable "remote_ip_prefix" {
   type = string
 }
 
-variable "security_group_id" {
-  type = string
-}
+#variable "security_group_id" {
+#  type = string
+#}
 
 variable "script_file_path" {
   type = string
+}
+
+variable "instances_count" {
+  type = number
+  default = 1
 }

@@ -1,4 +1,4 @@
-# --- computing/providers.tf ---
+# --- root/providers.tf ---
 
 # https://registry.terraform.io/providers/terraform-provider-openstack/openstack/latest/docs
 terraform {
