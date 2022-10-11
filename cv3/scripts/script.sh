@@ -35,7 +35,7 @@ echo "$(date): docker installed" >> start.txt
 #dpkg -i /tmp/docker/docker-compose-plugin_2.10.2~ubuntu-focal_amd64.deb
 #dpkg -i /tmp/docker/docker-scan-plugin_0.17.0~ubuntu-focal_amd64.deb
 
-echo "$(date): starting docker nginx" >> /var/log/terra.log
-docker run --name nginx-test-server -d -p 80:80 nginx
-echo "$(date): nginx docker container running on 0.0.0.0:80" >> /var/log/terra.log
+#echo "$(date): starting docker nginx" >> /var/log/terra.log
+#docker run --name nginx-test-server -d -p 80:80 nginx
+#echo "$(date): nginx docker container running on 0.0.0.0:80" >> /var/log/terra.log
 
