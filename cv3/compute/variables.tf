@@ -28,6 +28,10 @@ variable "remote_ip_prefix" {
   type = string
 }
 
+#variable "my_ip" {
+#  type = string
+#}
+
 #variable "security_group_id" {
 #  type = string
 #}

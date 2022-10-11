@@ -1,28 +1,62 @@
 # --- compute/main.tf ---
 
+# --- http to ip ---
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 # --- security groups ---
 resource "openstack_networking_secgroup_v2" "secgroup_terrabuntu" {
   name        = "secgroup_terrabuntu"
   description = "My neutron security group"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_1" {
-  description       = "allow SSH from uniza"
+#resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_1" {
+#  description       = "allow SSH from uniza"
+#  direction         = "ingress"
+#  ethertype         = "IPv4"
+#  protocol          = "tcp"
+#  port_range_min    = 22
+#  port_range_max    = 22
+#  remote_ip_prefix  = var.remote_ip_prefix
+#  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+#}
+#
+#resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_2" {
+#  description       = "allow ping from uniza"
+#  direction         = "ingress"
+#  ethertype         = "IPv4"
+#  protocol          = "icmp"
+#  remote_ip_prefix  = var.remote_ip_prefix
+#  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+#}
+
+resource "openstack_networking_secgroup_rule_v2" "allow_myip_ssh" {
+  description       = "allow SSH from myip"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
   port_range_min    = 22
   port_range_max    = 22
-  remote_ip_prefix  = var.remote_ip_prefix
+  remote_ip_prefix  = "${chomp(data.http.myip.response_body)}/32"
   security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
 }
 
-resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_2" {
-  description       = "allow ping from uniza"
+resource "openstack_networking_secgroup_rule_v2" "allow_myip_icmp" {
+  description       = "allow ping from myip"
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "icmp"
-  remote_ip_prefix  = var.remote_ip_prefix
+  remote_ip_prefix  = "${chomp(data.http.myip.response_body)}/32"
+  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+}
+
+resource "openstack_networking_secgroup_rule_v2" "allow_public_http" {
+  description       = "allow public http on 80"
+  direction         = "ingress"
+  ethertype         = "IPv4"
+  protocol          = "icmp"
+  remote_ip_prefix  = "0.0.0.0/0"
   security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
 }
 
@@ -47,12 +81,11 @@ resource "random_pet" "terrabuntu" {
 resource "openstack_compute_instance_v2" "instance"{
   count           = var.instances_count
   name            = "terrabuntu-${random_pet.terrabuntu[count.index].id}"
-  #name            = "test"
   image_id        = "0fc1152a-4037-4d89-a22a-60f477e2eba0"
   flavor_id       = "1eee6fc3-f274-4406-a054-1969ac79926f"
-  key_pair        = "key-stud-15"
+  #key_pair        = "key-stud-15"
   
-  #key_pair        = openstack_compute_keypair_v2.keypair.private_key     # tu je nejaka chyba, vyskakuje potom name error v instancii
+  key_pair        = openstack_compute_keypair_v2.keypair.name  # tu je nejaka chyba, vyskakuje potom name error v instancii
 
   #security_groups = ["secgroup_terrabuntu"]
   security_groups = [ "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}" ]
