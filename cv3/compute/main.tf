@@ -60,17 +60,18 @@ resource "openstack_networking_secgroup_rule_v2" "allow_public_http" {
   security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
 }
 
-
 # --- keys ---
 resource "openstack_compute_keypair_v2" "keypair" {
-  name = "terrakey"
+  name = "${var.project}-key"
 }
 
 resource "local_file" "private_key" {
   content = openstack_compute_keypair_v2.keypair.private_key
-filename = "${path.module}/terrakey.pem"
+  #filename = "${path.module}/${var.project}-key.pem"
+  filename = "${pathexpand("~/.ssh")}/${var.project}-key.pem"
+#  filename = "${var.project}-key.pem"
+  file_permission = "0600"
 }
-
 
 # --- instances ---
 resource "random_pet" "terrabuntu" {
