@@ -84,10 +84,9 @@ resource "random_pet" "terrabuntu" {
 resource "openstack_compute_instance_v2" "instance"{
   count           = var.instances_count
   name            = "terrabuntu-${random_pet.terrabuntu[count.index].id}"
-  image_id        = "0fc1152a-4037-4d89-a22a-60f477e2eba0"
-  flavor_id       = "1eee6fc3-f274-4406-a054-1969ac79926f"
+  image_id        = var.image_id
+  flavor_id       = var.flavor_id
   #key_pair        = "key-stud-15"
-  
   key_pair        = openstack_compute_keypair_v2.keypair.name  # tu je nejaka chyba, vyskakuje potom name error v instancii
 
   #security_groups = ["secgroup_terrabuntu"]
