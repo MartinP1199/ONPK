@@ -35,7 +35,11 @@ terra_log "docker downloading"
 curl -fsSL https://get.docker.com -o get-docker.sh 
 terra_log "docker installation"
 sh get-docker.sh
-echo "$(date): docker installed" >> start.txt
+terra_log "docker installed"
+groupadd docker
+usermod -aG docker ubuntu
+terra_log "user ubuntu added to docker group"
+
 
 # --- docker install .deb ---
 #echo "$(date): docker downloading" >> /var/log/terra.log
