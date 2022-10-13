@@ -10,12 +10,12 @@ sysctl -w net.ipv6.conf.all.disable_ipv6=1
 sysctl -w net.ipv6.conf.default.disable_ipv6=1
 terra_log "ipv6 disabled"
 
-cat /var/log/terra.log
-echo "$(date): starting of scripting" >> /var/log/terra.log
 
 # --- linux update ---
-apt update
-echo "$(date): apt updated" >> /var/log/terra.log
+apt update -y
+apt upgrade -y
+terra_log "apt updated and upgraded"
+
 
 # --- docker install sh ---
 echo "$(date): docker downloading" >> /var/log/terra.log
