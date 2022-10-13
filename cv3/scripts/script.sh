@@ -1,6 +1,14 @@
 #!/bin/bash
 
-date
+
+# --- disable ipv6 ---
+# disable ipv6 in config - applied at next reboot
+echo "net.ipv6.conf.all.disable_ipv6=1" >> my_file.txt
+echo "net.ipv6.conf.default.disable_ipv6=1" >> my_file.txt
+# disable ipv6 in current session
+sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sysctl -w net.ipv6.conf.default.disable_ipv6=1
+terra_log "ipv6 disabled"
 
 cat /var/log/terra.log
 echo "$(date): starting of scripting" >> /var/log/terra.log
