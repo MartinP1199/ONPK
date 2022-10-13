@@ -6,9 +6,9 @@ data "http" "myip" {
 }
 
 # --- security groups ---
-resource "openstack_networking_secgroup_v2" "secgroup_terrabuntu" {
-  name        = "secgroup_terrabuntu"
-  description = "My neutron security group"
+resource "openstack_networking_secgroup_v2" "secgroup_01" {
+  name        = "secgroup-${var.project}"
+  description = "Security group for ${var.project} project"
 }
 
 #resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_1" {
@@ -19,7 +19,7 @@ resource "openstack_networking_secgroup_v2" "secgroup_terrabuntu" {
 #  port_range_min    = 22
 #  port_range_max    = 22
 #  remote_ip_prefix  = var.remote_ip_prefix
-#  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+#  security_group_id = "${openstack_networking_secgroup_v2.secgroup_instance.id}"
 #}
 #
 #resource "openstack_networking_secgroup_rule_v2" "secgroup_rule_2" {
@@ -28,7 +28,7 @@ resource "openstack_networking_secgroup_v2" "secgroup_terrabuntu" {
 #  ethertype         = "IPv4"
 #  protocol          = "icmp"
 #  remote_ip_prefix  = var.remote_ip_prefix
-#  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+#  security_group_id = "${openstack_networking_secgroup_v2.secgroup_instance.id}"
 #}
 
 resource "openstack_networking_secgroup_rule_v2" "allow_myip_ssh" {
@@ -39,7 +39,7 @@ resource "openstack_networking_secgroup_rule_v2" "allow_myip_ssh" {
   port_range_min    = 22
   port_range_max    = 22
   remote_ip_prefix  = "${chomp(data.http.myip.response_body)}/32"
-  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+  security_group_id = "${openstack_networking_secgroup_v2.secgroup_01.id}"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "allow_myip_icmp" {
@@ -48,7 +48,7 @@ resource "openstack_networking_secgroup_rule_v2" "allow_myip_icmp" {
   ethertype         = "IPv4"
   protocol          = "icmp"
   remote_ip_prefix  = "${chomp(data.http.myip.response_body)}/32"
-  security_group_id = "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}"
+  security_group_id = "${openstack_networking_secgroup_v2.secgroup_01.id}"
 }
 
 resource "openstack_networking_secgroup_rule_v2" "allow_public_http" {
@@ -88,10 +88,9 @@ resource "openstack_compute_instance_v2" "instance"{
   flavor_id       = var.flavor_id
   #key_pair        = "key-stud-15"
   key_pair        = openstack_compute_keypair_v2.keypair.name  # tu je nejaka chyba, vyskakuje potom name error v instancii
-
-  #security_groups = ["secgroup_terrabuntu"]
-  security_groups = [ "${openstack_networking_secgroup_v2.secgroup_terrabuntu.id}" ]
-  #security_groups = var.security_group_id
+  #security_groups = [ "${openstack_networking_secgroup_v2.secgroup_01.id}" ]
+  #security_groups = [ var.security_group_id.name ]
+  security_groups = [ openstack_networking_secgroup_v2.secgroup_01.name ]
 
   user_data = "${file(var.script_file_path)}"
 
