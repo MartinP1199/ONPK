@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# --- imports ---
+#date
+
+# --- custom functions ---
+#cat /var/log/terra.log
+LOGFILE='/var/log/terra.log'
+function terra_log {
+  echo `date "+%Y/%m/%d %H:%M:%S"`" $1"
+  echo `date "+%Y/%m/%d %H:%M:%S"`" $1" >> $LOGFILE
+}
+
+terra_log "starting of scripting"
+
 
 # --- disable ipv6 ---
 # disable ipv6 in config - applied at next reboot
@@ -18,9 +31,9 @@ terra_log "apt updated and upgraded"
 
 
 # --- docker install sh ---
-echo "$(date): docker downloading" >> /var/log/terra.log
+terra_log "docker downloading"
 curl -fsSL https://get.docker.com -o get-docker.sh 
-echo "$(date): docker installation" >> /var/log/terra.log
+terra_log "docker installation"
 sh get-docker.sh
 echo "$(date): docker installed" >> start.txt
 
