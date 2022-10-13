@@ -1,8 +1,8 @@
 # --- root/main.tf ---
 
-module "network" {
-  source = "./network"
-}
+#module "network" {
+#  source = "./network"
+#}
 
 module "instance" {
   source = "./compute"

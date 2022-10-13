@@ -1,2 +1,2 @@
-cv3/terraform.auto.tfvars
+*.auto.tfvars
 *.pem
