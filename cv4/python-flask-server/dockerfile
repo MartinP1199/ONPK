@@ -1,0 +1,8 @@
+FROM python:alpine
+
+RUN pip3 install flask netaddr
+RUN mkdir /var/python-web
+COPY web /var/python-web
+WORKDIR /var/python-web
+ENTRYPOINT [ "python" ]
+CMD [ "main.py" ]

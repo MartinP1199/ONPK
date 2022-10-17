@@ -1,0 +1,41 @@
+</br>
+
+    <div id="help" class="collapse row">
+        <div class="col">
+            <div class="alert alert-secondary">
+                <h6>
+                    Address
+                </h6>
+                <p>
+                    Network address to start with subnetting (4 bit octets <0-255> in form "X.X.X.X" where X is one
+                    octet, e.g. "192.168.0.0")
+                </p>
+
+                <h6>
+                    Prefix/Mask
+                </h6>
+                <p>
+                    Network prefix (as number <0-32>) or mask (4 bit octets <0-255> in form "X.X.X.X" where X is one
+                    octet, e.g. "255.255.255.0") to start with subnetting.
+                </p>
+
+                <h6>
+                    Hosts
+                </h6>
+                <p>
+                    Specified host_count/name+host_count to create subnet specified network in form "N-C" where N is name for subnet and C is number of host that should be in the subnet e.g. "subnet1-15".
+                    (For creating multiple subnets use coma + space as separator e.g. "subnet1-15, subnet2-24, subnet5-75")
+                </p>
+
+                <h6>
+                    Variable mask
+                </h6>
+                <p>
+                    If the chescklist is on, the variable mask will be used for subnets, that means that subnets can have different mask, but it will use less network space, so it's more effective.
+                    </br>
+                    If the chectlist if off, the static mask will be used for subnets, that means that all subnets will have same mask in spite of the fact, that they have different number of hosts.
+                </p>
+
+            </div>
+        </div>
+    </div>
